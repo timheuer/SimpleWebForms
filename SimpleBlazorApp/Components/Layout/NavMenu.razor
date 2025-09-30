@@ -1,0 +1,63 @@
+@using Microsoft.AspNetCore.Components.Routing
+@implements IDisposable
+@inject NavigationManager Navigation
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+    <div class="container">
+        <NavLink class="navbar-brand" href="">Application name</NavLink>
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+                title="Toggle navigation" aria-controls="navbarSupportedContent" aria-expanded="@(!collapseNavMenu)" 
+                aria-label="Toggle navigation" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between @NavMenuCssClass" id="navbarSupportedContent">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="OnNavLinkClick">Home</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="about" @onclick="OnNavLinkClick">About</NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="contact" @onclick="OnNavLinkClick">Contact</NavLink>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override void OnInitialized()
+    {
+        // Subscribe to navigation events to handle state management
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void OnNavLinkClick()
+    {
+        // Collapse the mobile menu when a navigation link is clicked
+        collapseNavMenu = true;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // Ensure the mobile menu is collapsed when navigation occurs
+        collapseNavMenu = true;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from navigation events to prevent memory leaks
+        Navigation.LocationChanged -= OnLocationChanged;
+    }
+}

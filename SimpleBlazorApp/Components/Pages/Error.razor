@@ -1,0 +1,99 @@
+@page "/Error"
+@using Microsoft.AspNetCore.Diagnostics
+@using Microsoft.Extensions.Logging
+@inject ILogger<Error> Logger
+@inject IWebHostEnvironment Environment
+
+<PageTitle>Error - SimpleBlazorApp</PageTitle>
+
+<main aria-labelledby="title">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="alert alert-danger" role="alert">
+                    <h1 id="title" class="alert-heading">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        An Error Occurred
+                    </h1>
+                    <p class="mb-3">
+                        We're sorry, but an unexpected error has occurred while processing your request.
+                    </p>
+                    
+                    @if (Environment.IsDevelopment())
+                    {
+                        <hr>
+                        <h4>Development Error Details:</h4>
+                        @if (!string.IsNullOrEmpty(ErrorMessage))
+                        {
+                            <div class="alert alert-warning">
+                                <strong>Error Message:</strong>
+                                <pre class="mt-2">@ErrorMessage</pre>
+                            </div>
+                        }
+                        
+                        @if (!string.IsNullOrEmpty(StackTrace))
+                        {
+                            <div class="alert alert-info">
+                                <strong>Stack Trace:</strong>
+                                <pre class="mt-2" style="font-size: 0.8em;">@StackTrace</pre>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="mb-0">
+                            The error has been logged and our team has been notified. 
+                            Please try again later or contact support if the problem persists.
+                        </p>
+                    }
+                </div>
+                
+                <div class="mt-4">
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-home"></i>
+                        Return to Home
+                    </a>
+                    <button type="button" class="btn btn-secondary ms-2" onclick="history.back()">
+                        <i class="fas fa-arrow-left"></i>
+                        Go Back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@code {
+    private string? ErrorMessage { get; set; }
+    private string? StackTrace { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        try
+        {
+            // Try to get exception details from HttpContext if available
+            var httpContext = HttpContextAccessor?.HttpContext;
+            if (httpContext != null)
+            {
+                var exceptionFeature = httpContext.Features.Get<IExceptionHandlerFeature>();
+                if (exceptionFeature?.Error != null)
+                {
+                    var exception = exceptionFeature.Error;
+                    ErrorMessage = exception.Message;
+                    StackTrace = exception.StackTrace;
+                    
+                    // Log the error
+                    Logger.LogError(exception, "Unhandled exception occurred in application");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Fallback logging if there's an issue accessing the exception details
+            Logger.LogError(ex, "Error occurred while processing error page");
+        }
+    }
+    
+    [Inject]
+    private IHttpContextAccessor? HttpContextAccessor { get; set; }
+}

@@ -1,0 +1,123 @@
+﻿@implements IDisposable
+
+<ErrorBoundary @ref="errorBoundary">
+    <ChildContent>
+        <Router AppAssembly="@typeof(App).Assembly">
+            <Found Context="routeData">
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            </Found>
+            <NotFound>
+                <PageTitle>Not found</PageTitle>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <main aria-labelledby="title" class="container mt-4">
+                        <div class="row">
+                            <div class="col-md-8 offset-md-2">
+                                <div class="alert alert-warning" role="alert">
+                                    <h1 id="title" class="alert-heading">
+                                        <i class="fas fa-search"></i>
+                                        Page Not Found
+                                    </h1>
+                                    <p class="mb-3">Sorry, there's nothing at this address.</p>
+                                    <hr>
+                                    <p class="mb-0">
+                                        <a href="/" class="btn btn-primary">
+                                            <i class="fas fa-home"></i>
+                                            Return to Home
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </ChildContent>
+    <ErrorContent Context="exception">
+        <LayoutView Layout="@typeof(MainLayout)">
+            <main aria-labelledby="title" class="container mt-4">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="alert alert-danger" role="alert">
+                            <h1 id="title" class="alert-heading">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Component Error
+                            </h1>
+                            <p class="mb-3">Sorry, an unexpected error has occurred in this component.</p>
+                            
+                            @if (Environment.IsDevelopment())
+                            {
+                                <hr>
+                                <div class="alert alert-warning">
+                                    <strong>Error Details:</strong>
+                                    <pre class="mt-2">@exception.Message</pre>
+                                </div>
+                            }
+                            
+                            <hr>
+                            <p class="mb-0">
+                                <a href="/" class="btn btn-primary">
+                                    <i class="fas fa-home"></i>
+                                    Return to Home
+                                </a>
+                                <button type="button" class="btn btn-secondary ms-2" @onclick="RecoverFromError">
+                                    <i class="fas fa-refresh"></i>
+                                    Try Again
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </LayoutView>
+    </ErrorContent>
+</ErrorBoundary>
+
+@code {
+    private ErrorBoundary? errorBoundary;
+    
+    [Inject]
+    private ILogger<App> Logger { get; set; } = default!;
+    
+    [Inject]
+    private IWebHostEnvironment Environment { get; set; } = default!;
+    
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+    
+    protected override void OnInitialized()
+    {
+        // Subscribe to navigation events for logging and state management
+        Navigation.LocationChanged += OnLocationChanged;
+        Logger.LogDebug("App component initialized with navigation tracking");
+    }
+    
+    protected override void OnParametersSet()
+    {
+        // Reset error boundary on navigation to ensure clean state
+        errorBoundary?.Recover();
+    }
+    
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // Log navigation events for debugging and monitoring
+        Logger.LogDebug("Navigation occurred from {PreviousLocation} to {NewLocation}", 
+            e.Location, Navigation.Uri);
+        
+        // Ensure error boundary is reset on navigation
+        errorBoundary?.Recover();
+    }
+    
+    private void RecoverFromError()
+    {
+        Logger.LogInformation("User initiated error recovery");
+        errorBoundary?.Recover();
+    }
+    
+    public void Dispose()
+    {
+        // Clean up navigation event subscription
+        Navigation.LocationChanged -= OnLocationChanged;
+    }
+}

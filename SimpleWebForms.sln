@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36526.6 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWebForms", "SimpleWebForms\SimpleWebForms.csproj", "{BAE12E4A-EAC4-498C-9C88-D6E074480166}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBlazorApp", "SimpleBlazorApp\SimpleBlazorApp.csproj", "{8519D303-86D4-260B-479F-0F602712AEA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BAE12E4A-EAC4-498C-9C88-D6E074480166}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAE12E4A-EAC4-498C-9C88-D6E074480166}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAE12E4A-EAC4-498C-9C88-D6E074480166}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8519D303-86D4-260B-479F-0F602712AEA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8519D303-86D4-260B-479F-0F602712AEA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8519D303-86D4-260B-479F-0F602712AEA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8519D303-86D4-260B-479F-0F602712AEA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
