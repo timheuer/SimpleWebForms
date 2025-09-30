@@ -10,13 +10,13 @@ namespace SimpleBlazorApp.Services
         /// </summary>
         /// <param name="name">The name to generate a greeting for</param>
         /// <returns>A greeting message</returns>
-        string GenerateGreeting(string name);
+        string GenerateGreeting(string? name);
 
         /// <summary>
         /// Validates if the provided name is valid for greeting
         /// </summary>
         /// <param name="name">The name to validate</param>
         /// <returns>True if the name is valid, false otherwise</returns>
-        bool ValidateName(string name);
+        bool ValidateName(string? name);
     }
 }

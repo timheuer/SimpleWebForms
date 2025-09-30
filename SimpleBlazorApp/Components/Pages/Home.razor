@@ -1,13 +1,17 @@
 @page "/"
+@rendermode @(new InteractiveServerRenderMode())
 @using SimpleBlazorApp.Services
+@using Microsoft.AspNetCore.Components.Web
 @inject IGreetingService GreetingService
+
 
 <PageTitle>Home Page</PageTitle>
 
 <main>
     <section class="row" aria-labelledby="aspnetTitle">
         <h1 id="aspnetTitle">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML,
+            CSS, and JavaScript.</p>
         <p><a href="http://www.asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
     </section>
 
@@ -16,7 +20,8 @@
             <h2 id="gettingStartedTitle">Getting started</h2>
             <p>
                 ASP.NET Web Forms lets you build dynamic websites using a familiar drag-and-drop, event-driven model.
-                A design surface and hundreds of controls and components let you rapidly build sophisticated, powerful UI-driven sites with data access.
+                A design surface and hundreds of controls and components let you rapidly build sophisticated, powerful
+                UI-driven sites with data access.
             </p>
             <p>
                 <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301948">Learn more &raquo;</a>
@@ -25,7 +30,8 @@
         <section class="col-md-4" aria-labelledby="librariesTitle">
             <h2 id="librariesTitle">Get more libraries</h2>
             <p>
-                NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.
+                NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and
+                tools in Visual Studio projects.
             </p>
             <p>
                 <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301949">Learn more &raquo;</a>
@@ -34,7 +40,8 @@
         <section class="col-md-4" aria-labelledby="hostingTitle">
             <h2 id="hostingTitle">Web Hosting</h2>
             <p>
-                You can easily find a web hosting company that offers the right mix of features and price for your applications.
+                You can easily find a web hosting company that offers the right mix of features and price for your
+                applications.
             </p>
             <p>
                 <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301950">Learn more &raquo;</a>
@@ -72,27 +79,27 @@
     private void HandleGreetButtonClick()
     {
         using var scope = Logger.BeginScope("HandleGreetButtonClick");
-        
+
         Logger.LogDebug("Greeting button clicked by user");
-        
+
         try
         {
             // Log the interaction (without sensitive data)
-            Logger.LogInformation("User initiated greeting request with input length: {InputLength}", 
-                userName?.Length ?? 0);
+            Logger.LogInformation("User initiated greeting request with input length: {InputLength}",
+            userName?.Length ?? 0);
 
             // Use the greeting service to generate the greeting message
-            greetingMessage = GreetingService.GenerateGreeting(userName);
-            
+            greetingMessage = GreetingService.GenerateGreeting(userName ?? string.Empty);
+
             Logger.LogDebug("Greeting message generated successfully");
         }
         catch (Exception ex)
         {
             // Handle any errors that might occur during greeting generation
             Logger.LogError(ex, "Error occurred while processing greeting request");
-            
+
             greetingMessage = "An error occurred while processing your request.";
-            
+
             // Log additional context for debugging
             Logger.LogWarning("Fallback error message displayed to user due to greeting generation failure");
         }

@@ -1,19 +1,12 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using SimpleBlazorApp.Services;
-using SimpleBlazorApp.Middleware;
 using SimpleBlazorApp.Extensions;
+using SimpleBlazorApp.Middleware;
+using SimpleBlazorApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
-
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
-// Register server-side Blazor services so interactive events (SignalR) are enabled
-builder.Services.AddServerSideBlazor();
 
 // Add HttpContextAccessor for error handling
 builder.Services.AddHttpContextAccessor();
@@ -23,11 +16,7 @@ builder.Services.AddScoped<IGreetingService, GreetingService>();
 
 // Configure logging
 builder.Logging.ClearProviders();
-builder.Logging.AddConsole(options =>
-{
-    options.IncludeScopes = true;
-    options.TimestampFormat = "yyyy-MM-dd HH:mm:ss.fff ";
-});
+builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 // Add additional logging providers based on environment
@@ -63,24 +52,11 @@ else
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-
-// Ensure routing is enabled for hub endpoints and fallback page
-app.UseRouting();
-
 app.UseAntiforgery();
 
-// Map Razor Pages endpoints (required for MapFallbackToPage and _Host page)
-app.MapRazorPages();
-
-// Map the Blazor hub to enable interactive server-side components (SignalR)
-app.MapBlazorHub();
-
-// Keep existing Razor components mapping (if using the newer Razor Components APIs)
+// Map Razor components with interactive server rendering
 app.MapRazorComponents<SimpleBlazorApp.App>()
     .AddInteractiveServerRenderMode();
-
-// Map a fallback to the _Host page so the app can prerender and then activate on the client
-app.MapFallbackToPage("/_Host");
 
 // Log application startup
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
